@@ -1,4 +1,4 @@
-# cal-dates
+# p2p app
 Example client-side app with Electron build scripts
 
 ## Usage  

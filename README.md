@@ -3,7 +3,7 @@ Example client-side app with Electron build scripts
 
 ## Usage  
 
-### Lifecycle scripts included in cal-dates@0.0.1:
+### Lifecycle scripts included in p2p@0.0.1:
 
 `test`  
 > `echo 'test not defined yet.'`  

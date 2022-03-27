@@ -1,0 +1,136 @@
+<!DOCTYPE html><html><head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Calendar</title>
+	<link rel="stylesheet" href="index.css" type="text/css" />
+	<!-- <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
+	<link rel="manifest" href="/favicon/site.webmanifest"> -->
+	<script type="module" src="./custom-elements/arm-router.element.mjs"></script>
+	<script type="module" src="custom-elements/arm-footer.element.mjs"></script>
+	<script type="module" src="custom-elements/arm-header.element.mjs"></script>
+	<script type="module" src="custom-elements/arm-calendar.element.mjs"></script>
+
+	<!-- <script type="module" src="./custom-elements/arm-dropzone.element.mjs"></script> -->
+	<!-- <script type="module" src="./custom-elements/arm-game.element.mjs"></script> -->
+</head><body>
+	<arm-header>
+		<h1 slot="title-text">P2P</h1>
+		<a slot="right-1" href="https://github.com/or9/p2p">Source</a>
+		<a slot="right-2" href="#">Not sure what goes here</a>
+	</arm-header>
+	<nav>
+		<a id="anchor_home" href="#/home">#Home</a>
+		<a id="anchor_idk1" href="#/idk1">#IDK 1</a>
+		<a id="anchor_idk2" href="#/idk2">#IDK 2</a>
+	</nav>
+
+	<!-- What properties should be required/allowed? -->
+	<arm-router home="/home">
+		<section id="page_home" class="content router-page">
+			<!-- <arm-calendar></arm-calendar> -->
+			<div class="p2psection input">
+				Send:
+				<textarea id="sendContent"></textarea>
+				<button id="sendContentBtn" for="sendContent">Send</button>
+			</div>
+			<div class="p2psection input">
+				Received:
+				<output id="receivedContent"></output>
+			</div>
+		</section>
+		<section id="page_idk1" class="content router-page">
+			<h2>IDK1 Section</h2>
+		</section>
+		<section id="page_idk2" class="content router-page">
+			<h2>IDK2 Section</h2>
+		</section>
+	</arm-router>
+
+	<arm-footer 
+	id="footer" 
+	class="template--section section--footer" 
+	copyright-name="Rahman Malik">	
+	</arm-footer>
+
+	<script type="module">
+		// 192.168.0.123
+
+		fetch(`/api/gm`)
+			.then(handleResponse)
+			.then(parseResponse)
+			.catch(handleRequestFailure);
+
+		function handleResponse(response) {
+			if (!response.ok) {
+				return response.text().then(text => Promise.reject(text))
+			}
+
+			return response.text();
+		}
+
+		function parseResponse(responseText) {
+			const parser = new DOMParser();
+			const parsedResponse = parser.parseFromString(responseText, "text/html");
+
+			console.log("response: ", parsedResponse);
+		}
+
+		function handleRequestFailure(error) {
+			console.warn("API Request failed", error);
+		}
+	</script>
+	<!-- Please use cil- prefix for linear icons, cib- prefix for brand icons, and cif- prefix for flag icons. -->
+	<!-- interesting icons
+	arrow-thick-to-bottom (use for download)
+	ban
+	bell-exclamation
+	buffer
+	chat-bubble
+	check-circle
+	clear-all
+	clone
+	cloud-download
+	cloud-upload
+	clipboard
+	comment-square
+	comment-bubble
+	columns
+	copy
+	data-transfer-up
+	data-transfer-down
+	devices
+	double-quote-sans-left
+	double-quote-sans-right
+	drop
+	envelope-open
+	ethernet
+	exit-to-app
+	external-link
+	filter
+	file
+	fullscreen
+	fullscreen-exit
+	github
+	hand-point- (up, down, left, right)
+	home
+	https
+	image-plus <<-- good
+	info
+	library-add <<-- great
+	menu
+	minus
+	people
+	plus
+	save
+	search
+	settings
+	toggle-off / on
+	trash <<-- yes
+	user
+	user- (x, plus, unfollow, follow)
+	view- (column, quilt, stream, module)
+	warning
+	-->
+</body></html>

@@ -1,7 +1,9 @@
 # p2p app
 Example client-side app with Electron build scripts
 
-## Usage  
+## Usage 
+
+Install NodeJS, run `npm start` 
 
 ### Lifecycle scripts included in p2p@0.0.1:
 

@@ -57,29 +57,7 @@
 	<script type="module">
 		// 192.168.0.123
 
-		fetch(`/api/gm`)
-			.then(handleResponse)
-			.then(parseResponse)
-			.catch(handleRequestFailure);
-
-		function handleResponse(response) {
-			if (!response.ok) {
-				return response.text().then(text => Promise.reject(text))
-			}
-
-			return response.text();
-		}
-
-		function parseResponse(responseText) {
-			const parser = new DOMParser();
-			const parsedResponse = parser.parseFromString(responseText, "text/html");
-
-			console.log("response: ", parsedResponse);
-		}
-
-		function handleRequestFailure(error) {
-			console.warn("API Request failed", error);
-		}
+		
 	</script>
 	<!-- Please use cil- prefix for linear icons, cib- prefix for brand icons, and cif- prefix for flag icons. -->
 	<!-- interesting icons

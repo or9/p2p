@@ -1,7 +1,7 @@
 <!DOCTYPE html><html><head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Calendar</title>
+	<title>P2P</title>
 	<link rel="stylesheet" href="index.css" type="text/css" />
 	<!-- <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
@@ -11,6 +11,8 @@
 	<script type="module" src="custom-elements/arm-footer.element.mjs"></script>
 	<script type="module" src="custom-elements/arm-header.element.mjs"></script>
 	<script type="module" src="custom-elements/arm-calendar.element.mjs"></script>
+	<script src="adapter.js"></script>
+	<script src="chatclient.js"></script>
 
 	<!-- <script type="module" src="./custom-elements/arm-dropzone.element.mjs"></script> -->
 	<!-- <script type="module" src="./custom-elements/arm-game.element.mjs"></script> -->
@@ -22,8 +24,8 @@
 	</arm-header>
 	<nav>
 		<a id="anchor_home" href="#/home">#Home</a>
-		<a id="anchor_idk1" href="#/idk1">#IDK 1</a>
-		<a id="anchor_idk2" href="#/idk2">#IDK 2</a>
+		<a id="anchor_idk1" href="#/mdn-example">#MDN Example</a>
+		<a id="anchor_idk2" href="#/goals">#Goals</a>
 	</nav>
 
 	<!-- What properties should be required/allowed? -->
@@ -32,19 +34,94 @@
 			<!-- <arm-calendar></arm-calendar> -->
 			<div class="p2psection input">
 				Send:
-				<textarea id="sendContent"></textarea>
+				<input type="text" value="http://192.168.0.123:8090" id="sendToIp" placeholder="3.12.23.123" />
+				<textarea id="sendContent" placeholder="send this content…"></textarea>
 				<button id="sendContentBtn" for="sendContent">Send</button>
+				<div id="sendLog"></div>
 			</div>
 			<div class="p2psection input">
 				Received:
 				<output id="receivedContent"></output>
 			</div>
 		</section>
-		<section id="page_idk1" class="content router-page">
-			<h2>IDK1 Section</h2>
+		<section id="page_mdn-example" class="content router-page">
+			<h2>MDN Example</h2>
+			<div class="container">
+				<div class="infobox">
+					<p>This is a simple chat system implemented using WebSockets. It works by sending packets of JSON back and forth with the server. <a href="https://github.com/mdn/samples-server/tree/master/s/webrtc-from-chat"> Check out the source</a> on Github.</p>
+					<p class="mdn-disclaimer">This text and audio/video chat example is offered as-is for demonstration purposes only, and should not be used for any other purpose.</p>
+					<p>Click a username in the user list to ask them to enter a one-on-one video chat with you.</p>
+					<p>Enter a username: <input id="name" type="text" maxlength="12" required autocomplete="username" inputmode="verbatim" placeholder="Username">
+					<input type="button" name="login" value="Log in" onclick="connect()"></p>
+				</div>
+				<ul class="userlistbox"></ul>
+				<div class="chatbox"></div>
+				<div class="camerabox">
+					<video id="received_video" autoplay></video>
+					<video id="local_video" autoplay muted></video>
+					<button id="hangup-button" onclick="hangUpCall();" role="button" disabled>
+					Hang Up
+					</button>
+				</div>
+				<div class="empty-container"></div>
+				<div class="chat-controls">
+					Chat:<br/>
+					<input id="text" type="text" name="text" size="100" maxlength="256" placeholder="Say something meaningful..." autocomplete="off" onkeyup="handleKey(event)" disabled>
+					<input type="button" id="send" name="send" value="Send" onclick="handleSendButton()" disabled>
+				</div>
+			</div>
 		</section>
-		<section id="page_idk2" class="content router-page">
-			<h2>IDK2 Section</h2>
+		<section id="page_goals" class="content router-page">
+			<h2>Goals</h2>
+			<ul>
+				<li>Start with LAN, then move on to internet</li>
+				<li>Create a peer-to-peer sharing app with support for:
+					<ul>
+						<li>Multi user audio/video</li>
+						<li>Chat: individual or group</li>
+						<li>File sharing: individual or group</li>
+					</ul>
+				</li>
+				<li>Use a web worker to handle WSS messages
+					<ul>
+						<li>Should ensure app performance as features are added</li>
+						<li>Ensures scalability</li>
+					</ul>
+				</li>
+				<li>Implement user preferences
+					<ul>
+						<li>Configurable SSL key/cert for legitimacy</li>
+						<li>Enable/disable cloud features</li>
+						<li>Enable/disable app features</li>
+					</ul>
+				</li>
+				<li>Enable serverless features through a cloud provider:
+					<ul>
+						<li>Hold undeliverable messages for up to one month</li>
+						<li>Allow host discovery</li>
+						<li>Implement service worker with Notifications/Push capabilities</li>
+					</ul>
+				</li>
+				<li>Figure out some way to monetize this?
+					<ul>
+						<li>It seems like the end goal should be monetization</li>
+						<li>I do not see any real cost associated with this platform idea</li>
+						<li>Determine if there are going to be costs aside from time investment.</li>
+						<li>Possibly limited costs associated with cloud notifications</li>
+						<li>Set up a Patreon if there are costs</li>
+					</ul>
+				</li>
+			</ul>
+
+			<p>
+				In order for messages to be replicated to all users—including those who are not currently online—each client should probably have a database. This would require at least one participant in a given group to be online in order for other users in that group to get the most recent data. Probably not ideal, so maybe it would be preferable to just store a group identifier and content to a cloud database in order to limit dependency on any one group member?
+			</p>
+			<p>
+				Although, if each application is basically hosted by a single individual, there may be no need for a central database, and it can be assumed that session information will be centralized with the host. In the event of catastrophic failure of the host, all of that group's information could be lost unless it was also replicated to each participant.
+			</p>
+			<p>
+				Through the use of service workers' Notifications and Push events, session data could be replicated to all participants regardless of their online status if they are subscribed to a particular host. Push would require a cloud notification system provider, but that should not have any real costs associated with it. Maybe include a Patreon link so interested parties can invest and support the project if they find it useful.
+			</p>
 		</section>
 	</arm-router>
 
@@ -54,10 +131,93 @@
 	copyright-name="Rahman Malik">	
 	</arm-footer>
 
+	<style type="text/css">
+		.p2psection pre {
+			color: #ddd;
+			transition:  color 2s;
+		}
+		.p2psection pre.sent-item--new {
+			color: #000;
+			transition:  color 2s;
+		}
+	</style>
+
 	<script type="module">
 		// 192.168.0.123
+		// or9p2p
 
-		
+		// Set up an asynchronous communication channel that will be
+		// used during the peer connection setup
+		// const signalingChannel = new SignalingChannel(remoteClientId);
+		// 	signalingChannel.addEventListener('message', message => {
+		// 	// New message from remote client received
+		// });
+
+		// // Send an asynchronous message to the remote client
+		// signalingChannel.send('Hello!');
+
+		const sendContentArea = document.querySelector(`#sendContent`);
+		const sendContentBtn = document.querySelector(`#sendContentBtn`);
+
+		sendContentBtn.onclick = sendContent;
+
+		function sendContent(event) {
+			event.preventDefault();
+			createSentLog(sendContentArea.value);
+			sendContentArea.value = "";
+
+			makeCall();
+		}
+
+		function createSentLog(value) {
+			const el = document.createElement("pre");
+			el.innerHTML = `${new Date().toISOString()} ${value}`;
+			sendContentArea.parentNode.appendChild(el);
+
+			el.classList.add("sent-item--new");
+
+			setTimeout(() => {
+				el.classList.remove("sent-item--new");
+			}, 2000);
+		}
+
+		async function makeCall() {
+			const sendToIpAddr = document.querySelector(`#sendToIp`).value;
+
+			// Set up an asynchronous communication channel that will be
+			// used during the peer connection setup
+			// const signalingChannel = new SignalingChannel(remoteClientId);
+			// const signalingChannel = new SignalingChannel(sendToIpAddr);
+			// signalingChannel.addEventListener('message', message => {
+			// 	// New message from remote client received
+			// });
+
+			// Send an asynchronous message to the remote client
+			// signalingChannel.send('Hello!');
+
+			// const configuration = {
+			// 	// `iceServers`: [{'urls': 'stun:stun.l.google.com:19302'}],
+			// 	"iceServers": [
+			// 		// {
+			// 		// 	"urls": sendToIpAddr,
+			// 		// },
+			// 	],
+			// };
+
+			// const peerConnection = new RTCPeerConnection(configuration);
+			const peerConnection = new RTCPeerConnection();
+
+			signalingChannel.addEventListener(`message`, async message => {
+				if (message.answer) {
+					const remoteDesc = new RTCSessionDescription(message.answer);
+					await peerConnection.setRemoteDescription(remoteDesc);
+				}
+			});
+
+			const offer = await peerConnection.createOffer();
+			await peerConnection.setLocalDescription(offer);
+			signalingChannel.send({'offer': offer});
+		}
 	</script>
 	<!-- Please use cil- prefix for linear icons, cib- prefix for brand icons, and cif- prefix for flag icons. -->
 	<!-- interesting icons

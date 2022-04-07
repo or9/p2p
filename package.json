@@ -6,6 +6,7 @@
 	"scripts": {
 		"test": "echo 'test not defined yet.'",
 		"start:webapp": "node server.js",
+		"prestart": "./create_ssl_cert.sh",
 		"start": "electron-forge start",
 		"package": "electron-forge package",
 		"configure": "electron-forge import",
@@ -35,7 +36,9 @@
 	},
 	"dependencies": {
 		"electron-log": "^4.4.6",
-		"electron-squirrel-startup": "^1.0.0"
+		"electron-squirrel-startup": "^1.0.0",
+		"webrtc-adapter": "^8.1.1",
+		"websocket": "^1.0.34"
 	},
 	"devDependencies": {
 		"@electron-forge/cli": "^6.0.0-beta.63",

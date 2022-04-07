@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+const { hostname } = require("os");
 const {
 	app,
 	BrowserWindow,
@@ -22,6 +24,7 @@ logger.transports.file.resolvePath = () => path.join(__dirname, 'logs/main.log')
 // 	});
 
 import("./server.mjs")
+	.then(import("./chatserver.mjs"))
 	.then(startElectron)
 	.catch((err) => {
 		logger.error("Failed to start server", err);
@@ -30,7 +33,8 @@ import("./server.mjs")
 // startElectron();
 
 // async function startElectron({ server, port, address }) {
-async function startElectron(importedServerModule) {
+async function startElectron({ port }) {
+	logger.info(`#startElectron`);
 	await app.whenReady();
 
 	createWindow();
@@ -50,9 +54,8 @@ async function startElectron(importedServerModule) {
 
 		// ipcMain.on("proxyRequest", ipcApi.proxyRequest);
 
-		// win.loadFile(`index.html`);
-		win.loadURL(`http://localhost:${importedServerModule.default.port}`);
-		// win.loadURL(`http://localhost:${port}`);
+		win.loadURL(`https://${hostname()}.local:${port}`);
+		//win.loadURL(`https://localhost:${port}`);
 	}
 
 	function createWindowOnActivate() {

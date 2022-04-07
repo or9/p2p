@@ -1,10 +1,14 @@
 // #!/usr/bin/env node
 
 import {
-	createServer,
+	// createServer,
 	STATUS_CODES,
 } from "http";
-import { get, request } from "https";
+import {
+	get,
+	request,
+	createServer,
+} from "https";
 import {
 	createReadStream,
 	readFileSync,
@@ -44,7 +48,9 @@ const mimeTypes = {
 // process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
 const { defaultConfig } = JSON.parse(readFileSync(`${__dirname}/package.json`));
-const config = {
+export const config = {
+	certFilePath: `certs/exampl.crt`,
+	keyFilePath: `private/exampl.key`,
 	...defaultConfig,
 	...process.env,
 	routes: {
@@ -53,16 +59,22 @@ const config = {
 	}
 };
 
-const httpServer = createServer(requestHandler)
+const sslConfig = getSslConfig(config);
+console.log("sslconfig: ", sslConfig);
+export const httpsServer = createServer(sslConfig, requestHandler)
 	.listen(config.TEST_SERVER_PORT, config.TEST_SERVER_ADDR, listeningHandler)
 	.on("error", (err) => {
 		log.error("Caught error", err);
 	});
 
-export default {
-	httpServer,
-	port: config.TEST_SERVER_PORT,
-};
+// export httpsServer;
+// export config;
+export const port = config.TEST_SERVER_PORT;
+// export default {
+// 	httpsServer,
+// 	config,
+// 	port: config.TEST_SERVER_PORT,
+// };
 
 process.on(`SIGTERM`, shutdown);
 process.on(`SIGINT`, shutdown);
@@ -156,7 +168,7 @@ function listeningHandler () {
 }
 
 function shutdown (...args) {
-	httpServer.close();
+	httpsServer.close();
 
 	if (args[1] === "uncaughtException") {
 		log.error(args[0]);
@@ -165,4 +177,16 @@ function shutdown (...args) {
 		log.info(args[0]);
 		// process.exit(0);
 	}
+}
+
+function getSslConfig(config = {}) {
+	const {
+		certFilePath,
+		keyFilePath,
+	} = config;
+
+	return {
+		key: readFileSync(`${__dirname}/${keyFilePath}`, `utf8`),
+		cert: readFileSync(`${__dirname}/${certFilePath}`, `utf8`),
+	};
 }
